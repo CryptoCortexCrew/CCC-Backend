@@ -17,4 +17,18 @@ app.use(morgan("combined", { stream: logger.stream }))
 
 app.use("/api", contactRoutes)
 
+// Root health-check / status route
+app.get("/", (req, res) => {
+	const payload = {
+		status: "ok",
+		message: "Everything is running perfectly",
+		uptime: process.uptime(),
+		timestamp: new Date().toISOString(),
+		env: process.env.NODE_ENV || "development",
+	}
+
+	logger.info("Health check", payload)
+	res.status(200).json(payload)
+})
+
 export default app
