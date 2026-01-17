@@ -1,6 +1,6 @@
 import express from "express"
 import Contact from "../models/Contact.js"
-import transporter from "../config/mailer.js"
+import { sendMail } from "../config/mailer.js"
 
 const router = express.Router()
 
@@ -22,12 +22,13 @@ router.post("/contact", async (req, res) => {
       message,
     })
 
-    // 2. Send email
-await transporter.sendMail({
-  from: `"CryptoCortex Crew" <${process.env.EMAIL_USER}>`,
-  to: process.env.RECEIVER_EMAIL,
-  subject: `🌌 New Project Inquiry – ${name}`,
-  html: `
+    // 2. Send email (best-effort)
+    try {
+      await sendMail({
+        from: `"CryptoCortex Crew" <${process.env.EMAIL_USER}>`,
+        to: process.env.RECEIVER_EMAIL,
+        subject: `🌌 New Project Inquiry – ${name}`,
+        html: `
   <div style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); padding: 40px 0; font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;">
     <div style="max-width: 600px; margin: 0 auto; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);">
       
@@ -155,12 +156,13 @@ await transporter.sendMail({
     </div>
   </div>
   `,
-})
-
-    res.json({
-      success: true,
-      id: savedLead._id,
-    })
+      })
+      res.json({ success: true, id: savedLead._id })
+    } catch (emailErr) {
+      console.error("Email send failed (saving lead succeeded):", emailErr)
+      // Return success for saved lead but indicate email failed so frontend can surface it
+      res.status(202).json({ success: true, id: savedLead._id, email_sent: false, message: "Lead saved but email delivery failed" })
+    }
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: "Submission failed" })
