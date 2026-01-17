@@ -25,7 +25,9 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "mongoose": "^9.1.4",
-    "nodemailer": "^7.0.12"
+    "nodemailer": "^7.0.12",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"

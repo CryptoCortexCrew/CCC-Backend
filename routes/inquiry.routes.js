@@ -48,4 +48,15 @@ router.post("/submit", async (req, res) => {
   }
 });
 
+// GET /api/inquiry/ - fetch all received inquiries (mails)
+router.get("/", async (req, res) => {
+  try {
+    const inquiries = await Inquiry.find().sort({ createdAt: -1 });
+    res.status(200).json({ count: inquiries.length, data: inquiries });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;
