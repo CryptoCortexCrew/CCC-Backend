@@ -14,11 +14,12 @@ const connectDB = async () => {
 
   console.log("MONGO_URI present: true")
 
+  // Use only supported options for recent mongodb/mongoose drivers.
+  // Removed legacy options: useNewUrlParser, useUnifiedTopology
   const options = {
-    // modern parser and unified topology
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 5000, // short timeout for faster failure detection
+    // short timeout for faster failure detection
+    serverSelectionTimeoutMS: 5000,
+    // you can add other supported options here if needed, e.g. tls, tlsCAFile, replicaSet, authSource
   }
 
   const maxRetries = parseInt(process.env.DB_CONNECT_RETRIES, 10) || 5
@@ -37,7 +38,6 @@ const connectDB = async () => {
         await sleep(retryDelay)
       } else {
         console.error("MongoDB connection failed after retries", err)
-        // Provide common troubleshooting hints
         console.error("Troubleshooting hints: 1) Ensure Atlas IP access list allows this host's IP; 2) Verify the connection string and credentials; 3) Allow TLS/SSL if required by Atlas; 4) Test with MongoDB Compass using the same URI.")
         process.exit(1)
       }
