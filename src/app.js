@@ -3,7 +3,7 @@ import cors from "cors"
 import morgan from "morgan"
 import connectDB from "./config/db.js"
 import contactRoutes from "./routes/contactRoutes.js"
-import logger from "./config/logger.
+import logger from "./config/logger.js
 
 const app = express()
 
