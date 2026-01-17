@@ -16,7 +16,8 @@ app.use(cors({
     'http://localhost:3000', 
     'http://localhost:3001',
     'http://127.0.0.1:3000',
-    'http://127.0.0.1:3001'
+    'http://127.0.0.1:3001',
+    'https://crypto-cortex-crew.vercel.app'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
